@@ -20,7 +20,7 @@ func MakeUserRepository(client *firestore.Client) infRepo.IUserRepository {
 
 func (r UserRepository) GetUserById(ctx context.Context, id string) (entities.User, error) {
 	user := entities.User{}
-	userDoc, err := r.client.Collection("user").Doc(id).Get(ctx)
+	userDoc, err := r.client.Collection("users").Doc(id).Get(ctx)
 	if err != nil {
 		return user, err
 	}
@@ -33,7 +33,7 @@ func (r UserRepository) GetUserById(ctx context.Context, id string) (entities.Us
 }
 
 func (r UserRepository) CrateUser(ctx context.Context, user entities.User) error {
-	query, err := r.client.Collection("user").Where("Username", "==", user.Username).Documents(ctx).GetAll()
+	query, err := r.client.Collection("users").Where("Username", "==", user.Username).Documents(ctx).GetAll()
 
 	if err != nil {
 		return err
@@ -43,7 +43,7 @@ func (r UserRepository) CrateUser(ctx context.Context, user entities.User) error
 		return errors.New("username is exists")
 	}
 
-	_, _, err = r.client.Collection("user").Add(context.Background(), user)
+	_, _, err = r.client.Collection("users").Add(context.Background(), user)
 	if err != nil {
 		// Handle any errors in an appropriate way, such as returning them.
 		log.Printf("An error has occurred: %s", err)
@@ -53,7 +53,7 @@ func (r UserRepository) CrateUser(ctx context.Context, user entities.User) error
 }
 
 func (r UserRepository) LoginUser(ctx context.Context, user entities.User) (string, error) {
-	doc, err := r.client.Collection("user").Where("Username", "==", user.Username).Documents(ctx).Next()
+	doc, err := r.client.Collection("users").Where("Username", "==", user.Username).Documents(ctx).Next()
 
 	if err != nil {
 		return "", errors.New("invalid username or password")
@@ -72,7 +72,7 @@ func (r UserRepository) LoginUser(ctx context.Context, user entities.User) (stri
 }
 
 func (r UserRepository) EditUser(ctx context.Context, id string, user entities.User) error {
-	_, err := r.client.Collection("user").Doc(id).Set(ctx, user)
+	_, err := r.client.Collection("users").Doc(id).Set(ctx, user)
 
 	if err != nil {
 		return err

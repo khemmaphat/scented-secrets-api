@@ -23,13 +23,15 @@ func main() {
 
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:3000"}
-	config.AllowMethods = []string{"GET", "POST", "PATCh", "PUT", "DELETE"}
+	config.AllowMethods = []string{"GET", "POST", "PATCH", "PUT", "DELETE"}
 	config.AllowHeaders = []string{"*"}
 
 	r := gin.Default()
 	r.Use(cors.New(config))
 
 	handler.ApplyUserHandler(r, client)
+	handler.ApplyPerfumeHandler(r, client)
+	handler.ApplyQuestionHandler(r, client)
 
 	r.Run(":8080")
 }
