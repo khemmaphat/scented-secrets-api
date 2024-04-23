@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	"cloud.google.com/go/firestore"
 	"github.com/gin-gonic/gin"
@@ -26,7 +27,9 @@ func ApplyPerfumeHandler(r *gin.Engine, client *firestore.Client) {
 		perfumeGroup.POST("/searchperfume", perfumeHandler.SearchPerfumePagination)
 		perfumeGroup.POST("/createnote", perfumeHandler.AddNotesData)
 		perfumeGroup.GET("/getallgroupnote", perfumeHandler.GetAllNoteGroup)
-
+		perfumeGroup.GET("/resultmixed", perfumeHandler.GetResultMixedPerfume)
+		perfumeGroup.GET("/comment", perfumeHandler.GetPerfumeComment)
+		perfumeGroup.GET("/perfumepath", perfumeHandler.GetPerfumePath)
 	}
 
 }
@@ -134,5 +137,63 @@ func (h PerfumeHandler) GetAllNoteGroup(c *gin.Context) {
 	}
 
 	res.SetSuccess("Get Group Note success", 200, groupNote)
+	c.JSON(http.StatusOK, res)
+}
+
+func (h PerfumeHandler) GetResultMixedPerfume(c *gin.Context) {
+	answered := c.Query("answered")
+	answered = strings.ReplaceAll(answered, "%20", " ")
+	var result model.ResultMixedPerfume
+	var res model.HTTPResponse
+
+	if answered == "" {
+		res.SetError("Require answered", 400, nil)
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	result, err := h.perfumeService.GetResultMixedPerfume(context.Background(), answered)
+	if err != nil {
+		res.SetError(err.Error(), 200, err)
+		c.JSON(http.StatusOK, res)
+		return
+	}
+
+	res.SetSuccess("get perfume success", 200, result)
+	c.JSON(http.StatusOK, res)
+}
+
+func (h PerfumeHandler) GetPerfumeComment(c *gin.Context) {
+	perfumeId := c.Query("perfumeId")
+	var res model.HTTPResponse
+
+	if perfumeId == "" {
+		res.SetError("Require perfumeId", 400, nil)
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	comments, err := h.perfumeService.GetPerfumeComment(context.Background(), perfumeId)
+	if err != nil {
+		res.SetError(err.Error(), 200, err)
+		c.JSON(http.StatusOK, res)
+		return
+	}
+
+	res.SetSuccess("get perfume comment success", 200, comments)
+	c.JSON(http.StatusOK, res)
+}
+
+func (h PerfumeHandler) GetPerfumePath(c *gin.Context) {
+	var res model.HTTPResponse
+
+	paths, err := h.perfumeService.GetPerfumePath()
+	if err != nil {
+		res.SetError(err.Error(), 200, err)
+		c.JSON(http.StatusOK, res)
+		return
+	}
+
+	res.SetSuccess("get perfume path success", 200, paths)
 	c.JSON(http.StatusOK, res)
 }

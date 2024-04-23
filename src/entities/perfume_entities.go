@@ -34,3 +34,19 @@ type Note struct {
 	Group       string `json:"group,omitempty"`
 	ImgUrl      string `json:"imgUrl,omitempty"`
 }
+
+type Notes struct {
+	TopNotes    []string `json:"topNotes"`
+	MiddleNotes []string `json:"middleNotes"`
+	BaseNotes   []string `json:"baseNotes"`
+}
+
+type PerfumeComment struct {
+	Name    string `json:"name"`
+	Rating  int    `json:"rating"`
+	Comment string `json:"comment"`
+}
+
+type PerfumePath struct {
+	Path string `json:"path"`
+}

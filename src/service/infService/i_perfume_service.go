@@ -13,4 +13,7 @@ type IPerfumeService interface {
 	SearchPerfumePagination(ctx context.Context, req entities.PerfumePaginationRequest) ([]entities.PerfumeResponse, int, error)
 	AddNoteData(notes []entities.Note) error
 	GetAllNoteGroup(ctx context.Context) ([]model.GroupNotes, error)
+	GetResultMixedPerfume(ctx context.Context, answered string) (model.ResultMixedPerfume, error)
+	GetPerfumeComment(ctx context.Context, perfumeId string) (model.AveragePerfumeComment, error)
+	GetPerfumePath() ([]entities.PerfumePath, error)
 }

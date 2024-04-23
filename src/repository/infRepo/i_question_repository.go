@@ -8,4 +8,5 @@ import (
 
 type IQuestionRepository interface {
 	GetQuestions(ctx context.Context) ([]entities.Question, error)
+	GetResultQuestion(answered string) float64
 }

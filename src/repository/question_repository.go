@@ -38,3 +38,7 @@ func (r QuestionRepository) GetQuestions(ctx context.Context) ([]entities.Questi
 	}
 	return questions, nil
 }
+
+func (r QuestionRepository) GetResultQuestion(answered string) float64 {
+	return 10.123
+}
