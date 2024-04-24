@@ -35,3 +35,8 @@ func (r UserService) EditUser(ctx context.Context, id string, user entities.User
 	err := r.userRepository.EditUser(ctx, id, user)
 	return err
 }
+
+func (r UserService) UpdateNameUser(ctx context.Context, id string, name string) error {
+	err := r.userRepository.UpdateNameUser(ctx, id, name)
+	return err
+}

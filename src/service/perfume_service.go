@@ -98,10 +98,23 @@ func (s PerfumeService) SearchPerfumePagination(ctx context.Context, req entitie
 		return nil, 0, err
 	}
 
-	if req.Search != "" {
+	//search by brand
+	if req.SearchType != "Brand" && req.SearchGroup == "" {
 		var filteredRes []entities.PerfumeResponse
 		for _, val := range res {
-			if strings.Contains(val.Name, req.Search) {
+			if strings.HasPrefix(val.Brand, req.Search) {
+				filteredRes = append(filteredRes, val)
+			}
+		}
+
+		res = filteredRes
+	}
+
+	//search by name
+	if req.Search != "" && req.SearchType != "Brand" {
+		var filteredRes []entities.PerfumeResponse
+		for _, val := range res {
+			if strings.HasPrefix(val.Name, req.Search) {
 				filteredRes = append(filteredRes, val)
 			}
 		}

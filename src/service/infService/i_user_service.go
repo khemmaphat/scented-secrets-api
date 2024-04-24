@@ -11,4 +11,5 @@ type IUserService interface {
 	CrateUser(ctx context.Context, user entities.User) error
 	LoginUser(ctx context.Context, user entities.User) (string, error)
 	EditUser(ctx context.Context, id string, user entities.User) error
+	UpdateNameUser(ctx context.Context, id string, name string) error
 }

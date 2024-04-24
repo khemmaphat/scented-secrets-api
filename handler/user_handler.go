@@ -25,6 +25,7 @@ func ApplyUserHandler(r *gin.Engine, client *firestore.Client) {
 		userGroup.POST("/user", userHandler.CreateUser)
 		userGroup.POST("/login", userHandler.LoginUser)
 		userGroup.PATCH("/edituser", userHandler.EditUser)
+		userGroup.PATCH("/name", userHandler.UpdateNameUser)
 	}
 
 }
@@ -124,5 +125,34 @@ func (h UserHandler) EditUser(c *gin.Context) {
 	}
 
 	res.SetSuccess("Edit user success", 200, user)
+	c.JSON(http.StatusOK, res)
+}
+
+func (h UserHandler) UpdateNameUser(c *gin.Context) {
+	id := c.Query("id")
+	name := c.Query("name")
+
+	var res model.HTTPResponse
+
+	if id == "" {
+		res.SetError("Require user id", 400, nil)
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	if name == "" {
+		res.SetError("Require user name", 400, nil)
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	err := h.userService.UpdateNameUser(context.Background(), id, name)
+	if err != nil {
+		res.SetError(err.Error(), 200, err)
+		c.JSON(http.StatusOK, res)
+		return
+	}
+
+	res.SetSuccess("Update user name success", 200, nil)
 	c.JSON(http.StatusOK, res)
 }

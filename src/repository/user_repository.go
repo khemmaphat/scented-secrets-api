@@ -80,3 +80,17 @@ func (r UserRepository) EditUser(ctx context.Context, id string, user entities.U
 
 	return nil
 }
+
+func (r UserRepository) UpdateNameUser(ctx context.Context, id string, name string) error {
+	docRef := r.client.Collection("users").Doc(id)
+
+	_, err := docRef.Update(ctx, []firestore.Update{
+		{Path: "FirstName", Value: name},
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
