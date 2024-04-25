@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"cloud.google.com/go/firestore"
@@ -90,13 +91,20 @@ func (h UserHandler) LoginUser(c *gin.Context) {
 		return
 	}
 
+	if user.Username == "" || user.Password == "" {
+		res.SetError("require username of password", 200, errors.New("require username of password"))
+		c.JSON(http.StatusOK, res)
+		return
+	}
+
 	id, err := h.userService.LoginUser(context.Background(), user)
 	if err != nil {
 		res.SetError(err.Error(), 200, err)
 		c.JSON(http.StatusOK, res)
 		return
 	}
-	res.SetSuccess(id, 200, user)
+
+	res.SetSuccess("login success", 200, map[string]interface{}{"id": id})
 	c.JSON(http.StatusOK, res)
 }
 

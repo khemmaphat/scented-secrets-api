@@ -167,7 +167,7 @@ func (r PerfumeRepository) SearchPerfumeWithBrand(ctx context.Context, req entit
 }
 
 func (r PerfumeRepository) SearchPerfumeNameWithBrand(ctx context.Context, req entities.PerfumePaginationRequest) ([]entities.PerfumeResponse, error) {
-	query := r.client.Collection("perfumes").Where("CosineValue", ">=", req.CosineValue).Where("Brand", "==", req.SearchGroup)
+	query := r.client.Collection("perfumes").Where("Brand", "==", req.SearchGroup)
 
 	if req.Search != "" {
 		query = r.client.Collection("perfumes").Where("Name", ">=", req.Search).Where("Brand", "==", req.SearchGroup)

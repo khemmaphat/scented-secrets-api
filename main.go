@@ -22,7 +22,7 @@ func main() {
 	}
 
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:3000"}
+	config.AllowOrigins = []string{"http://localhost:3000", "https://scented-secrets-1958e.web.app"}
 	config.AllowMethods = []string{"GET", "POST", "PATCH", "PUT", "DELETE"}
 	config.AllowHeaders = []string{"*"}
 
