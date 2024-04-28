@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"net/http"
 	"os"
 
 	"cloud.google.com/go/firestore"
@@ -26,6 +27,14 @@ func main() {
 	config.AllowMethods = []string{"GET", "POST", "PATCH", "PUT", "DELETE"}
 	config.AllowHeaders = []string{"*"}
 
+	log.Print("Starting the service")
+
+	// Get the port from the environment variable or use a default port (e.g., 8080)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	r := gin.Default()
 	r.Use(cors.New(config))
 
@@ -33,5 +42,13 @@ func main() {
 	handler.ApplyPerfumeHandler(r, client)
 	handler.ApplyQuestionHandler(r, client)
 
-	r.Run(":8080")
+	// Add "Hello, World!" response to the root endpoint
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "Hello, World!",
+		})
+	})
+
+	log.Printf("The service is ready to listen and serve on port %s", port)
+	log.Fatal(http.ListenAndServe(":"+port, r))
 }
