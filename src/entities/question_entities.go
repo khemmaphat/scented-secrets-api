@@ -11,5 +11,5 @@ type ResultQuestion struct {
 	Brand       string `json:"brand"`
 	Notes       Notes  `json:"notes"`
 	Description string `json:"description"`
-	ImfUrl      string `json:"imgUrl"`
+	ImgUrl      string `json:"imgUrl"`
 }

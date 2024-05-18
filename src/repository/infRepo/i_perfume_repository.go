@@ -7,7 +7,9 @@ import (
 )
 
 type IPerfumeRepository interface {
+	GetAllPerfume(ctx context.Context) ([]entities.Perfume, error)
 	GetPerfumeById(ctx context.Context, id string) (entities.Perfume, error)
+	GetPerfumeByName(ctx context.Context, name string) (string, entities.Perfume, error)
 	GetPerfumeByCosineValue(ctx context.Context, cosineValue float64) (string, entities.Perfume, error)
 	AddPerfumeData(perfume entities.Perfume) error
 	SearchPerfume(ctx context.Context, req entities.PerfumePaginationRequest) ([]entities.PerfumeResponse, error)

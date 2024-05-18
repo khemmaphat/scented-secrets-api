@@ -17,6 +17,27 @@ func MakePerfumeRepository(client *firestore.Client) infRepo.IPerfumeRepository 
 	return &PerfumeRepository{client: client}
 }
 
+func (r PerfumeRepository) GetAllPerfume(ctx context.Context) ([]entities.Perfume, error) {
+	var perfumes []entities.Perfume
+	iter := r.client.Collection("perfumes").Documents(ctx)
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		var perfume entities.Perfume
+		if err := doc.DataTo(&perfume); err != nil {
+			return nil, err
+		}
+		perfumes = append(perfumes, perfume)
+
+	}
+	return perfumes, nil
+}
+
 func (r PerfumeRepository) GetPerfumeById(ctx context.Context, id string) (entities.Perfume, error) {
 	var perfume entities.Perfume
 	perfumeDoc, err := r.client.Collection("perfumes").Doc(id).Get(ctx)
@@ -30,6 +51,31 @@ func (r PerfumeRepository) GetPerfumeById(ctx context.Context, id string) (entit
 	}
 
 	return perfume, nil
+}
+
+func (r PerfumeRepository) GetPerfumeByName(ctx context.Context, name string) (string, entities.Perfume, error) {
+	var perfume entities.Perfume
+	var perfumeId string
+	perfumeQuery := r.client.Collection("perfumes").Where("Name", "==", name).Limit(1)
+	perfumeDoc := perfumeQuery.Documents(ctx)
+
+	for {
+		doc, err := perfumeDoc.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return "", perfume, err
+		}
+
+		if err := doc.DataTo(&perfume); err != nil {
+			return "", perfume, err
+		}
+
+		perfumeId = doc.Ref.ID
+	}
+
+	return perfumeId, perfume, nil
 }
 
 func (r PerfumeRepository) GetPerfumeByCosineValue(ctx context.Context, cosineValue float64) (string, entities.Perfume, error) {
